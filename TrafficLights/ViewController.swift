@@ -7,41 +7,65 @@
 
 import UIKit
 
-class ViewController: UIViewController {
 
-    @IBOutlet var redLightView: UIView!
-    @IBOutlet var yellowLightView: UIView!
-    @IBOutlet var greenLightView: UIView!
+
+class ViewController: UIViewController {
+    
+    @IBOutlet var redLight: UIView!
+    @IBOutlet var yellowLight: UIView!
+    @IBOutlet var greenLight: UIView!
+    
     @IBOutlet var startButton: UIButton!
+    
+    private let lightOff: CGFloat = 0.3
+    private let lightOn: CGFloat = 1
+    private var currentLight: CurrentLight = .red
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        redLightView.alpha = 0.3
-        redLightView.layer.cornerRadius = redLightView.frame.size.width / 2
-        yellowLightView.alpha = 0.3
-        yellowLightView.layer.cornerRadius = yellowLightView.frame.size.width / 2
-        greenLightView.alpha = 0.3
-        greenLightView.layer.cornerRadius = greenLightView.frame.size.width / 2
         
+        redLight.alpha = lightOff
+        yellowLight.alpha = lightOff
+        greenLight.alpha = lightOff
+        
+        startButton.layer.cornerRadius = 10
     }
-
+    
+    override func viewWillLayoutSubviews() {
+        redLight.layer.cornerRadius = redLight.frame.width / 2
+        yellowLight.layer.cornerRadius = yellowLight.frame.width / 2
+        greenLight.layer.cornerRadius = greenLight.frame.width / 2
+    }
+    
+    
     @IBAction func startButtonDidPressed() {
-        startButton.setTitle("NEXT", for: .normal)
-
-        if greenLightView.alpha == 1 {
-            viewDidLoad()
-            redLightView.alpha = 1
-        } else if redLightView.alpha == 1 {
-            viewDidLoad()
-            yellowLightView.alpha = 1
-        } else if yellowLightView.alpha == 1 {
-            viewDidLoad()
-            greenLightView.alpha = 1
-        } else {
-            redLightView.alpha = 1
+        if startButton.currentTitle == "START" {
+            startButton.setTitle("NEXT", for: .normal)
         }
         
+        switch currentLight {
+        case .red:
+            greenLight.alpha = lightOff
+            redLight.alpha = lightOn
+            currentLight = .yellow
+            
+        case .yellow:
+            redLight.alpha = lightOff
+            yellowLight.alpha = lightOn
+            currentLight = .green
+            
+        case .green:
+            yellowLight.alpha = lightOff
+            greenLight.alpha = lightOn
+            currentLight = .red
+        }
     }
     
 }
 
+extension ViewController {
+    enum CurrentLight {
+        case red, yellow, green
+    }
+}
